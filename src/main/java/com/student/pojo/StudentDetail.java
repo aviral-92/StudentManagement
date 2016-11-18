@@ -1,5 +1,8 @@
 package com.student.pojo;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class StudentDetail {
 	int Student_rollno;
 	String student_name;

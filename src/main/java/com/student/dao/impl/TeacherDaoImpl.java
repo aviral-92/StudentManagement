@@ -4,34 +4,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import com.student.dao.StudentDao;
-import com.student.pojo.StudentDetail;
+import com.student.dao.TeacherDao;
+import com.student.pojo.TeacherDetails;
 
 @Component
-public class StudentDaoImpl implements StudentDao {
+public class TeacherDaoImpl implements TeacherDao {
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-	public String addStudent() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public String addTeacher(TeacherDetails teacherDetails) {
 
-	public StudentDetail getStudent(StudentDetail studentDetail) {
-		// TODO Auto-generated method stub
-		return null;
+		String response = null;
+		Object args[] = { teacherDetails.getTeacher_id(),
+				teacherDetails.getTeacher_name(),
+				teacherDetails.getTeacher_address() };
+		int num = jdbcTemplate
+				.update("INSERT INTO student_mgmt.teacher(TEACHER_ID,TEACHER_NAME,TEACHER_ADDRESS) values(?,?,?)",
+						args);
+		if (num > 0) {
+			response = "Successfully Inserted data of Teacher and Teacher ID is : "
+					+ teacherDetails.getTeacher_id();
+		} else {
+			response = "No data Inserted.";
+		}
+		return response;
 	}
-
-	public String updateStudent(StudentDetail studentDetail) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public String deleteStudent(StudentDetail studentDetail) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-
 }
