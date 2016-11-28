@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import com.student.dao.TeacherDao;
 import com.student.dao.impl.extractor.TeacherExtractor;
@@ -20,17 +20,22 @@ public class TeacherDaoImpl implements TeacherDao {
 	public String addTeacher(TeacherDetails teacherDetails) {
 
 		String response = null;
-		Object args[] = { teacherDetails.getTeacher_id(),
-				teacherDetails.getTeacher_name(),
-				teacherDetails.getTeacher_address() };
-		int num = jdbcTemplate
-				.update("INSERT INTO student_mgmt.teacher(TEACHER_ID,TEACHER_NAME,TEACHER_ADDRESS) values(?,?,?)",
-						args);
-		if (num > 0) {
-			response = "Successfully Inserted data of Teacher and Teacher ID is : "
-					+ teacherDetails.getTeacher_id();
+		if (!isTeacherExist(teacherDetails)) {
+			Object args[] = { teacherDetails.getTeacher_id(),
+					teacherDetails.getTeacher_name(),
+					teacherDetails.getTeacher_address() };
+			int num = jdbcTemplate
+					.update("INSERT INTO student_mgmt.teacher(TEACHER_ID,TEACHER_NAME,TEACHER_ADDRESS) values(?,?,?)",
+							args);
+			if (num > 0) {
+				response = "Successfully Inserted data of Teacher and Teacher ID is : "
+						+ teacherDetails.getTeacher_id();
+			} else {
+				response = "No data Inserted.";
+			}
 		} else {
-			response = "No data Inserted.";
+			response = "TeacherId " + teacherDetails.getTeacher_id()
+					+ " already exist ";
 		}
 		return response;
 	}
@@ -44,16 +49,49 @@ public class TeacherDaoImpl implements TeacherDao {
 
 	public String updateteacher(TeacherDetails teacherDetails) {
 		String response = null;
-		Object args[] = { teacherDetails.getTeacher_id(),
-				teacherDetails.getTeacher_name(),
-				teacherDetails.getTeacher_address() };
-		int num=jdbcTemplate.update(" Update student_mgmt TEACHER_ID = ?, TEACHER_NAME = ?, TEACHER_ADDRESS = ? where TEACHER_ID = ?", args);
-		if(num>0){
+		Object args[] = { teacherDetails.getTeacher_name(),
+				teacherDetails.getTeacher_address(),
+				teacherDetails.getTeacher_id() };
+		int num = jdbcTemplate
+				.update("Update student_mgmt.teacher set TEACHER_NAME = ?, TEACHER_ADDRESS = ? where TEACHER_ID = ?",
+						args);
+		if (num > 0) {
 			response = "Successfully Updated data of Teacher and Teacher ID is : "
 					+ teacherDetails.getTeacher_id();
 		} else {
 			response = "No data Updated.";
 		}
 		return response;
+	}
+
+	public String deleteTeacher(TeacherDetails teacherDetails) {
+		String response = null;
+		Object args[] = { teacherDetails.getTeacher_id() };
+
+		int num = jdbcTemplate
+				.update("Delete from student_mgmt.teacher where  TEACHER_ID = ?;",
+						args);
+
+		if (num > 0) {
+			response = "Successfully deleted data of Teacher and teacher ID is:"
+					+ teacherDetails.getTeacher_id();
+		} else {
+			response = "No data Deleted";
+		}
+		return response;
+	}
+
+	private boolean isTeacherExist(TeacherDetails teacherDetails) {
+
+		boolean result = false;
+		String query = "select * from student_mgmt.teacher where teacher_id= ? ";
+		Object args[] = { teacherDetails.getTeacher_id() };
+		List<TeacherDetails> response = jdbcTemplate.query(query,
+				new TeacherExtractor(), args);
+		if (!StringUtils.isEmpty(response) && !response.isEmpty()) {
+			result = true;
+		}
+		return result;
+
 	}
 }
