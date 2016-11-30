@@ -5,11 +5,11 @@ public class SubjectDetails {
 	String sub_name;
 	String sub_marks;
 
-	SubjectDetails() {
-		System.out.println("Default Subject Constructor");
+	public SubjectDetails() {
+		
 	}
 
-	SubjectDetails(int code, String name, String marks) {
+	public SubjectDetails(int code, String name, String marks) {
 		super();
 		this.sub_code = code;
 		this.sub_name = name;
