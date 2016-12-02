@@ -1,5 +1,6 @@
 package com.student.dao.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,19 +48,67 @@ public class TeacherDaoImpl implements TeacherDao {
 		return response;
 	}
 
-	public String updateteacher(TeacherDetails teacherDetails) {
+	// public String updateteacher(TeacherDetails teacherDetails) {
+	// String response = null;
+	// Object args[] = { teacherDetails.getTeacher_name(),
+	// teacherDetails.getTeacher_address(),
+	// teacherDetails.getTeacher_id() };
+	// int num = jdbcTemplate
+	// .update("Update student_mgmt.teacher set TEACHER_NAME = ?, TEACHER_ADDRESS = ? where TEACHER_ID = ?",
+	// args);
+	// if (num > 0) {
+	// response = "Successfully Updated data of Teacher and Teacher ID is : "
+	// + teacherDetails.getTeacher_id();
+	// } else {
+	// response = "No data Updated.";
+	// }
+	// return response;
+	// }
+
+	public String updateTeacher(TeacherDetails teacherDetails) {
+
 		String response = null;
-		Object args[] = { teacherDetails.getTeacher_name(),
-				teacherDetails.getTeacher_address(),
-				teacherDetails.getTeacher_id() };
-		int num = jdbcTemplate
-				.update("Update student_mgmt.teacher set TEACHER_NAME = ?, TEACHER_ADDRESS = ? where TEACHER_ID = ?",
-						args);
-		if (num > 0) {
-			response = "Successfully Updated data of Teacher and Teacher ID is : "
-					+ teacherDetails.getTeacher_id();
+		if (!StringUtils.isEmpty(teacherDetails)) {
+			boolean teacherName = false, teacherAddress = false;
+			List<Object> args = new ArrayList<Object>();
+			StringBuilder query = new StringBuilder(
+					"Update student_mgmt.teacher set ");
+
+			if (!StringUtils.isEmpty(teacherDetails.getTeacher_name())) {
+				query.append(" teacher_name = ? ");
+				args.add(teacherDetails.getTeacher_name());
+				teacherName = true;
+			}
+
+			if (!StringUtils.isEmpty(teacherDetails.getTeacher_address())) {
+				if (teacherName) {
+					query.append(", teacher_address=? ");
+					args.add(teacherDetails.getTeacher_address());
+					teacherAddress = true;
+				} else {
+					query.append(" teacher_address=?");
+					args.add(teacherDetails.getTeacher_address());
+					teacherAddress = true;
+				}
+			}
+			if (teacherAddress || teacherName) {
+				if (teacherDetails.getTeacher_id() > 0) {
+					query.append(" WHERE teacher_id = ? ");
+					args.add(teacherDetails.getTeacher_id());
+				} else {
+					response = "Please provide Teacher Id to update";
+				}
+			} else {
+				response = " Please provide data to update either Name or Address";
+			}
+			int update = jdbcTemplate.update(query.toString(), args);
+			if (update > 0) {
+				response = "Data successfully Updated.......!!!!!!!";
+			} else {
+				response = "Unable to update.... Try again Later...";
+			}
 		} else {
-			response = "No data Updated.";
+			response = "Please provide data to update...!!!";
 		}
 		return response;
 	}

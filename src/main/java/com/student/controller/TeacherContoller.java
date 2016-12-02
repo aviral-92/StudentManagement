@@ -62,7 +62,8 @@ public class TeacherContoller {
 	public String updateTeacherDetails() {
 		TeacherDetails teacherDetails = new TeacherDetails(2, "aviral",
 				"shastri_nagar");
-		return teacherDao.updateteacher(teacherDetails);
+		// return teacherDao.updateteacher(teacherDetails);
+		return teacherDao.updateTeacher(teacherDetails);
 	}
 
 	@RequestMapping("/deleteteacher")

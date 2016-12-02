@@ -10,8 +10,10 @@ public interface TeacherDao {
 
 	public List<TeacherDetails> getTeacher(TeacherDetails teacherDetails);
 
-	public String updateteacher(TeacherDetails teacherDetails);
+	// public String updateteacher(TeacherDetails teacherDetails);
+
+	public String updateTeacher(TeacherDetails teacherDetails);
 
 	public String deleteTeacher(TeacherDetails teacherDetails);
-	
+
 }
